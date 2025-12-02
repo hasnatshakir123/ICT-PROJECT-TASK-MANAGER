@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudySync - Student Life Organizer</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+</head>
+<body>
+    <!-- (Login Page) -->
+    <div id="loginPage" class="login-container">
+        <div class="login-card animate__animated animate__fadeInUp">
+            <div class="login-header">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h1>Study<span>Sync</span></h1>
+                </div>
+                <p>Organize Your Academic Journey</p>
+            </div>
+            
+            <div class="login-form">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="username" placeholder="Username" value="student">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" placeholder="Password" value="1234">
+                </div>
+                <div id="errorMsg" class="error-msg"></div>
+                <button class="login-btn" onclick="login()">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                <p class="demo-info">Demo: username: student, password: 1234</p>
+            </div>
+            
+            <div class="login-footer">
+                <p>New here? <a href="#" onclick="showRegister()">Create Account</a></p>
+            </div>
+        </div>
+        
+        <!-- (Register Card (Hidden by default)) -->
+        <div class="register-card animate__animated animate__fadeInUp" style="display: none;">
+            <div class="login-header">
+                <div class="logo">
+                    <i class="fas fa-user-plus"></i>
+                    <h1>Create <span>Account</span></h1>
+                </div>
+                <p>Join StudySync Today</p>
+            </div>
+            
+            <div class="login-form">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="regUsername" placeholder="Choose Username">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="regEmail" placeholder="Email Address">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="regPassword" placeholder="Create Password">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="regConfirmPassword" placeholder="Confirm Password">
+                </div>
+                <div id="regErrorMsg" class="error-msg"></div>
+                <button class="login-btn" onclick="register()">
+                    <i class="fas fa-user-plus"></i> Register
+                </button>
+                <button class="back-btn" onclick="showLogin()">
+                    <i class="fas fa-arrow-left"></i> Back to Login
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- (Main App) -->
+    <div id="app" class="app-container">
+        <!-- (Header) -->
+        <header class="app-header">
+            <div class="header-left">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h1>Study<span>Sync</span></h1>
+                </div>
+                <div class="date-display" id="currentDateTime"></div>
+            </div>
+            
+            <div class="header-right">
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Student&background=4a6cf7&color=fff" alt="User">
+                    <span id="loggedInUser">Student</span>
+                </div>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </button>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </header>
+
+        <!-- (Sidebar Navigation) -->
+        <nav class="sidebar">
+            <ul class="nav-menu">
+                <li>
+                    <a href="#" class="nav-link active" onclick="showPage('dashboard', this)">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" onclick="showPage('tasks', this)">
+                        <i class="fas fa-tasks"></i>
+                        <span>Task Manager</span>
+                        <span class="task-badge" id="taskBadge">0</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" onclick="showPage('timetable', this)">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Weekly Timetable</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" onclick="showPage('notes', this)">
+                        <i class="fas fa-sticky-note"></i>
+                        <span>Notes</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link" onclick="showPage('deadlines', this)">
+                        <i class="fas fa-clock"></i>
+                        <span>Deadline Reminder</span>
+                        <span class="deadline-badge" id="deadlineBadge">0</span>
+                    </a>
+                </li>
+               
+                <li>
+                    <a href="#" class="nav-link" onclick="showPage('settings', this)">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="motivational-quote">
+                <p id="motivationText">"Education is the most powerful weapon..."</p>
+                <small>- Nelson Mandela</small>
+            </div>
+        </nav>
+
+        <!-- (Main Content) -->
+        <main class="main-content">
+            <!-- (Dashboard) -->
+            <section id="dashboard" class="page active">
+                <div class="page-header">
+                    <h2><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
+                    <p>Welcome back! Here's your academic overview</p>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon pending">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <h3>Pending Tasks</h3>
+                        <p class="stat-value" id="pendingTasks">0</p>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon completed">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h3>Completed Tasks</h3>
+                        <p class="stat-value" id="completedTasks">0</p>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon deadlines">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h3>Upcoming Deadlines</h3>
+                        <p class="stat-value" id="upcomingDeadlines">0</p>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon notes">
+                            <i class="fas fa-sticky-note"></i>
+                        </div>
+                        <h3>Saved Notes</h3>
+                        <p class="stat-value" id="savedNotes">0</p>
+                    </div>
+                </div>
+                
+                <div class="dashboard-content">
+                    <div class="dashboard-section">
+                        <h3><i class="fas fa-calendar-day"></i> Today's Schedule</h3>
+                        <div class="schedule-today" id="todaySchedule">
+                            <p class="no-data">No classes scheduled for today</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-section">
+                        <h3><i class="fas fa-exclamation-circle"></i> Urgent Tasks</h3>
+                        <div class="urgent-tasks" id="urgentTasks">
+                            <p class="no-data">No urgent tasks at the moment</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="quick-actions">
+                    <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="showPage('tasks')">
+                            <i class="fas fa-plus"></i> Add Task
+                        </button>
+                        <button class="action-btn" onclick="showPage('notes')">
+                            <i class="fas fa-edit"></i> Write Note
+                        </button>
+                        <button class="action-btn" onclick="showPage('timetable')">
+                            <i class="fas fa-calendar-plus"></i> Add Class
+                        </button>
+                        <button class="action-btn" onclick="showPage('deadlines')">
+                            <i class="fas fa-bell"></i> Set Reminder
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- |(Task Manager) -->
+            <section id="tasks" class="page">
+                <div class="page-header">
+                    <h2><i class="fas fa-tasks"></i> Task Manager</h2>
+                    <p>Organize your assignments and to-dos</p>
+                </div>
+                
+                <div class="task-input-section">
+                    <div class="task-input-group">
+                        <input type="text" id="taskInput" placeholder="What needs to be done?">
+                        <select id="taskPriority">
+                            <option value="low">Low Priority</option>
+                            <option value="medium" selected>Medium Priority</option>
+                            <option value="high">High Priority</option>
+                        </select>
+                        <input type="date" id="taskDueDate">
+                        <button class="primary-btn" onclick="addTask()">
+                            <i class="fas fa-plus"></i> Add Task
+                        </button>
+                    </div>
+                    
+                    <div class="task-filters">
+                        <button class="filter-btn active" onclick="filterTasks('all')">All</button>
+                        <button class="filter-btn" onclick="filterTasks('pending')">Pending</button>
+                        <button class="filter-btn" onclick="filterTasks('completed')">Completed</button>
+                        <button class="filter-btn" onclick="filterTasks('high')">High Priority</button>
+                    </div>
+                </div>
+                
+                <div class="task-list" id="taskList">
+                    <!-- (Tasks will be loaded here) -->
+                </div>
+            </section>
+
+            <!-- (Weekly Timetable) -->
+            <section id="timetable" class="page">
+                <div class="page-header">
+                    <h2><i class="fas fa-calendar-alt"></i> Weekly Timetable</h2>
+                    <p>Manage your class schedule</p>
+                </div>
+                
+                <div class="timetable-controls">
+                    <button class="primary-btn" onclick="showAddClassModal()">
+                        <i class="fas fa-plus"></i> Add Class
+                    </button>
+                    <div class="week-navigation">
+                        <button class="nav-btn" onclick="changeWeek(-1)">
+                            <i class="fas fa-chevron-left"></i> Prev Week
+                        </button>
+                        <h3 id="currentWeek">Week 1</h3>
+                        <button class="nav-btn" onclick="changeWeek(1)">
+                            Next Week <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="timetable-container">
+                    <table class="timetable">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Monday</th>
+                                <th>Tuesday</th>
+                                <th>Wednesday</th>
+                                <th>Thursday</th>
+                                <th>Friday</th>
+                                <th>Saturday</th>
+                            </tr>
+                        </thead>
+                        <tbody id="timetableBody">
+                            <!-- (Timetable will be generated here) -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="timetable-legend">
+                    <div class="legend-item">
+                        <span class="legend-color lecture"></span> Lecture
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color lab"></span> Lab
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color tutorial"></span> Tutorial
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-color break"></span> Break
+                    </div>
+                </div>
+            </section>
+
+            <!-- (Notes Section) -->
+            <section id="notes" class="page">
+                <div class="page-header">
+                    <h2><i class="fas fa-sticky-note"></i> Notes</h2>
+                    <p>Capture your thoughts and ideas</p>
+                </div>
+                
+                <div class="notes-input">
+                    <input type="text" id="noteTitle" placeholder="Note Title">
+                    <textarea id="noteContent" rows="5" placeholder="Start typing your note here..."></textarea>
+                    <div class="notes-actions">
+                        <select id="noteCategory">
+                            <option value="general">General</option>
+                            <option value="lecture">Lecture Notes</option>
+                            <option value="assignment">Assignment</option>
+                            <option value="project">Project</option>
+                            <option value="personal">Personal</option>
+                        </select>
+                        <button class="primary-btn" onclick="saveNote()">
+                            <i class="fas fa-save"></i> Save Note
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="notes-filters">
+                    <button class="filter-btn active" onclick="filterNotes('all')">All Notes</button>
+                    <button class="filter-btn" onclick="filterNotes('lecture')">Lecture Notes</button>
+                    <button class="filter-btn" onclick="filterNotes('assignment')">Assignments</button>
+                    <button class="filter-btn" onclick="filterNotes('project')">Projects</button>
+                </div>
+                
+                <div class="notes-grid" id="notesGrid">
+                    <!-- (Notes will be loaded here) -->
+                </div>
+            </section>
+
+            <!-- (Deadline Reminder) -->
+            <section id="deadlines" class="page">
+                <div class="page-header">
+                    <h2><i class="fas fa-clock"></i> Deadline Reminder</h2>
+                    <p>Never miss an important deadline</p>
+                </div>
+                
+                <div class="deadline-input">
+                    <input type="text" id="deadlineTitle" placeholder="Assignment/Exam Title">
+                    <input type="date" id="deadlineDate">
+                    <input type="time" id="deadlineTime" value="23:59">
+                    <select id="deadlinePriority">
+                        <option value="low">Low Priority</option>
+                        <option value="medium" selected>Medium Priority</option>
+                        <option value="high">High Priority</option>
+                    </select>
+                    <button class="primary-btn" onclick="addDeadline()">
+                        <i class="fas fa-bell"></i> Set Reminder
+                    </button>
+                </div>
+                
+                <div class="deadline-stats">
+                    <div class="stat-item">
+                        <h3>Upcoming</h3>
+                        <p class="stat-num" id="upcomingCount">0</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>Today</h3>
+                        <p class="stat-num" id="todayCount">0</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>Overdue</h3>
+                        <p class="stat-num" id="overdueCount">0</p>
+                    </div>
+                </div>
+                
+                <div class="deadline-list" id="deadlineList">
+                    <!-- (Deadlines will be loaded here) -->
+                </div>
+            </section>
+
+           
+
+            <!-- (Settings) -->
+            <section id="settings" class="page">
+                <div class="page-header">
+                    <h2><i class="fas fa-cog"></i> Settings</h2>
+                    <p>Customize your StudySync experience</p>
+                </div>
+                
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <h3><i class="fas fa-user"></i> Account Settings</h3>
+                        <div class="settings-group">
+                            <label>Username</label>
+                            <input type="text" id="settingsUsername" value="student">
+                        </div>
+                        <div class="settings-group">
+                            <label>Email</label>
+                            <input type="email" id="settingsEmail" placeholder="your.email@university.edu">
+                        </div>
+                        <div class="settings-group">
+                            <label>New Password</label>
+                            <input type="password" id="settingsPassword" placeholder="Leave blank to keep current">
+                        </div>
+                        <button class="primary-btn" onclick="updateProfile()">Update Profile</button>
+                    </div>
+                    
+                    <div class="settings-card">
+                        <h3><i class="fas fa-palette"></i> Appearance</h3>
+                        <div class="theme-options">
+                            <div class="theme-option" onclick="changeTheme('light')">
+                                <div class="theme-preview light"></div>
+                                <p>Light Mode</p>
+                            </div>
+                            <div class="theme-option" onclick="changeTheme('dark')">
+                                <div class="theme-preview dark"></div>
+                                <p>Dark Mode</p>
+                            </div>
+                            <div class="theme-option" onclick="changeTheme('blue')">
+                                <div class="theme-preview blue"></div>
+                                <p>Blue Theme</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-card">
+                        <h3><i class="fas fa-bell"></i> Notifications</h3>
+                        <div class="switch-group">
+                            <label>Deadline Reminders</label>
+                            <label class="switch">
+                                <input type="checkbox" id="deadlineNotifications" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="switch-group">
+                            <label>Task Reminders</label>
+                            <label class="switch">
+                                <input type="checkbox" id="taskNotifications" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="switch-group">
+                            <label>Class Reminders</label>
+                            <label class="switch">
+                                <input type="checkbox" id="classNotifications">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-card">
+                        <h3><i class="fas fa-database"></i> Data Management</h3>
+                        <button class="secondary-btn" onclick="exportData()">
+                            <i class="fas fa-download"></i> Export Data
+                        </button>
+                        <button class="secondary-btn" onclick="importData()">
+                            <i class="fas fa-upload"></i> Import Data
+                        </button>
+                        <button class="danger-btn" onclick="clearAllData()">
+                            <i class="fas fa-trash"></i> Clear All Data
+                        </button>
+                        <p class="warning-text">Warning: Clearing data cannot be undone</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- (Modal for adding class) -->
+        <div id="addClassModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-calendar-plus"></i> Add Class</h3>
+                    <button class="close-modal" onclick="closeModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Class Name</label>
+                        <input type="text" id="className" placeholder="e.g., Computer Science 101">
+                    </div>
+                    <div class="form-group">
+                        <label>Instructor</label>
+                        <input type="text" id="classInstructor" placeholder="Professor Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Day</label>
+                        <select id="classDay">
+                            <option value="monday">Monday</option>
+                            <option value="tuesday">Tuesday</option>
+                            <option value="wednesday">Wednesday</option>
+                            <option value="thursday">Thursday</option>
+                            <option value="friday">Friday</option>
+                            <option value="saturday">Saturday</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Start Time</label>
+                        <input type="time" id="classStartTime">
+                    </div>
+                    <div class="form-group">
+                        <label>End Time</label>
+                        <input type="time" id="classEndTime">
+                    </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="classType">
+                            <option value="lecture">Lecture</option>
+                            <option value="lab">Lab</option>
+                            <option value="tutorial">Tutorial</option>
+                            <option value="break">Break</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Room/Location</label>
+                        <input type="text" id="classLocation" placeholder="Room 101">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="secondary-btn" onclick="closeModal()">Cancel</button>
+                    <button class="primary-btn" onclick="saveClass()">Save Class</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- (Notification Toast) -->
+        <div id="notificationToast" class="toast">
+            <div class="toast-content">
+                <i class="fas fa-bell"></i>
+                <div class="toast-message" id="toastMessage"></div>
+            </div>
+            <button class="toast-close" onclick="hideToast()">&times;</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
