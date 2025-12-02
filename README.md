@@ -61,8 +61,13 @@ This is a semester project, but feedback is welcome! Feel free to fork or sugges
 
 ## 👨‍🎓 Author
 Your Name
+
 1st Semester ICT Student
+
 Hasnat Shakir
+
+Tehreem Zahra
+
 
 
 ## 🌟 Acknowledgments
